@@ -30,6 +30,7 @@ dist
 .wrangler
 .dev.vars*
 .prod.vars
+.prod.secrets.vars
 .env
 .env.*
 
