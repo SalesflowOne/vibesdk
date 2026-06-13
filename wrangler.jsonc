@@ -153,7 +153,7 @@
     ],
 	"vars": {
         "TEMPLATES_REPOSITORY": "https://github.com/cloudflare/vibesdk-templates",
-        "ALLOWED_EMAIL": "",
+        "ALLOWED_EMAIL": "ceo@salesflow.one",
         "ENABLE_READ_REPLICAS": "true",
         "PLATFORM_CAPABILITIES": {
             "features": {
