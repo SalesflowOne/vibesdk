@@ -79,6 +79,8 @@ export function useChat({
 	const deploymentTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	// Track the latest connection attempt to avoid handling stale socket events
 	const connectAttemptIdRef = useRef(0);
+	// Tracks new sessions that still need generate_all after WS connect (survives URL /chat/new -> /chat/:id navigation)
+	const pendingCodegenRef = useRef(false);
 	const connectWithRetryRef = useRef<
 		((
 			wsUrl: string,
@@ -344,9 +346,12 @@ export function useChat({
 					// Always request conversation state explicitly (running/full history)
 					sendWebSocketMessage(ws, 'get_conversation_state');
 
-					// Request file generation for new chats only
-					if (!disableGenerate && urlChatId === 'new') {
+					// Request file generation for new chats only.
+					// Use pendingCodegenRef instead of urlChatId === 'new' because navigation to
+					// /chat/:id can happen before the socket opens (or before a retry reconnects).
+					if (!disableGenerate && (pendingCodegenRef.current || urlChatId === 'new')) {
 						logger.debug('🔄 Starting code generation for new chat');
+						pendingCodegenRef.current = false;
 						setIsGenerating(true);
 						sendWebSocketMessage(ws, 'generate_all');
 					}
@@ -469,6 +474,7 @@ export function useChat({
 
 					// Prevent duplicate session creation on rerenders while streaming
 					connectionStatus.current = 'connecting';
+					pendingCodegenRef.current = true;
 
 					// Start new code generation using API client
 					const response = await apiClient.createAgentSession({
