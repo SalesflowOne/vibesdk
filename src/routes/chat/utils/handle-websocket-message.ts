@@ -330,9 +330,24 @@ export function createWebSocketMessageHandler(deps: HandleMessageDeps) {
 
                     setIsInitialStateRestored(true);
                     
+                    const hasGeneratedFiles =
+                        !!state.generatedFilesMap &&
+                        Object.keys(state.generatedFilesMap).length > 0;
+                    const needsCodegenStart =
+                        !!state.blueprint &&
+                        !state.mvpGenerated &&
+                        !hasGeneratedFiles &&
+                        !isGenerating &&
+                        state.behaviorType !== 'agentic';
+
                     if (state.shouldBeGenerating && !isGenerating) {
                         logger.debug('🔄 Reconnected with shouldBeGenerating=true, auto-resuming generation');
                         setIsGenerating(true); 
+                        updateStage('code', { status: 'active' });
+                        sendWebSocketMessage(websocket, 'generate_all');
+                    } else if (needsCodegenStart) {
+                        logger.debug('🔄 Blueprint ready but codegen not started, requesting generate_all');
+                        setIsGenerating(true);
                         updateStage('code', { status: 'active' });
                         sendWebSocketMessage(websocket, 'generate_all');
                     }
