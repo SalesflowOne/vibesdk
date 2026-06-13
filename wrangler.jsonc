@@ -55,14 +55,14 @@
 		"binding": "AI",
         "remote": true
 	},
-    // // // // "dispatch_namespaces": [
- //     {
- //         "binding": "DISPATCHER",
- //         "namespace": "orange-build-default-namespace",
- //         "experimental_remote": true
- //     }
- // ],
-	// Containers require Docker build/push; disabled for initial deploy in this environment.
+    "dispatch_namespaces": [
+        {
+            "binding": "DISPATCHER",
+            "namespace": "vibesdk-agentcloud-namespace",
+            "remote": true
+        }
+    ],
+	// Container image must be built locally (Docker) and pushed from your machine.
 	// "containers": [
 	// 	{
 	// 		"class_name": "UserAppSandboxService",
@@ -70,9 +70,7 @@
 	// 		"max_instances": 3,
 	// 		"instance_type": "standard-1",
 	// 		"rollout_step_percentage": 100,
-	// 		"ssh": {
-	// 			"enabled": true
-	// 		}
+	// 		"ssh": { "enabled": true }
 	// 	}
 	// ],
 	"d1_databases": [
@@ -171,11 +169,11 @@
             },
             "version": "1.0.0"
         },
-        "DISPATCH_NAMESPACE": "",
+        "DISPATCH_NAMESPACE": "vibesdk-agentcloud-namespace",
         "CLOUDFLARE_AI_GATEWAY": "vibesdk-gateway",
         "CUSTOM_DOMAIN": "build.agentcloud.one",
-        "MAX_SANDBOX_INSTANCES": "10",
-        "SANDBOX_INSTANCE_TYPE": "standard-3"
+        "MAX_SANDBOX_INSTANCES": "3",
+        "SANDBOX_INSTANCE_TYPE": "standard-1"
     },
 	"workers_dev": false,
 	"preview_urls": false
